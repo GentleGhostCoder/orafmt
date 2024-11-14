@@ -1,0 +1,7 @@
+- id: oracle-formatter-hook
+  name: Oracle SQL Formatter Hook
+  description: Formats SQL and other files using a custom script.
+  entry: orafmt
+  language: system
+  files: \.(sql|prc|fnc|pks|pkb|trg|vw|tps|tpb|tbp|plb|pls|rcv|spc|typ|aqt|aqp|ctx|dbl|tab|dim|snp|con|collt|seq|syn|grt|sp|spb|sps|pck)$
+  stages: [commit]  # Alternatively, remove this line to use all default stages

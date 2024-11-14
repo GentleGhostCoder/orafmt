@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "orafmt"
+version = "1.0.0" # <<FORCE_BUMP>>
+description = "A Python tool for formatting Oracle SQL files with SQLcl and custom formatting options."
+authors = ["Semjon Geist <mail@semjon-geist.de>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/YourUsername/orafmt"
+repository = "https://github.com/YourUsername/orafmt"
+keywords = ["oracle", "sql", "formatter", "pre-commit", "sqlcl"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+
+[tool.poetry.scripts]
+orafmt = "orafmt.cli:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
