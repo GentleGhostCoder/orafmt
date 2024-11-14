@@ -7,6 +7,7 @@ This repository includes a pre-configured pre-commit hook to automatically forma
 - **Automatic Formatting**: Formats SQL files with specified extensions to maintain code consistency.
 - **Supported File Types**: Includes common SQL and PL/SQL file extensions such as `.sql`, `.prc`, `.fnc`, `.pks`, `.pkb`, `.trg`, `.pls`, and more.
 - **Configurable Settings**: Uses `trivadis_advanced_format.xml` for advanced formatting configurations, which can be customized as needed.
+- **Flexible SQLcl Path**: Allows specifying the SQLcl path using the `SQL_PROGRAM` environment variable.
 
 ## Requirements
 
@@ -14,8 +15,16 @@ This repository includes a pre-configured pre-commit hook to automatically forma
 
 This pre-commit hook requires Oracle SQLcl (SQL Command Line) to perform SQL formatting. SQLcl provides powerful SQL scripting and formatting capabilities. Follow these steps to download and install it:
 
-- **Download SQLcl**: The latest version can be downloaded from [Oracle SQLcl Downloads](https://www.oracle.com/de/database/sqldeveloper/technologies/sqlcl/download/).
+- **Download SQLcl**: The latest version can be downloaded from [Oracle SQLcl Downloads](https://www.oracle.com/database/sqldeveloper/technologies/sqlcl/download/).
 - **Install SQLcl**: Refer to the [installation guide](https://docs.oracle.com/en/database/oracle/sqlcl/19.4/sclsg/installing-and-getting-started-with-sqlcl.html) if needed.
+
+#### Optional: Set SQLcl Path
+
+If SQLcl is not in your system PATH or if you want to specify a custom path, set the `SQL_PROGRAM` environment variable to the path of the `sql` binary. For example:
+
+```bash
+export SQL_PROGRAM="/path/to/sqlcl/bin/sql"
+```
 
 ### Git
 
@@ -46,7 +55,6 @@ This command sets up the pre-commit hook to run automatically before each commit
 
 1. **Identify Relevant Files**: The hook detects files based on specified extensions.
 2. **Format Files**: Each identified file is formatted using `formatter/format.js` via SQLcl, applying the settings in `trivadis_advanced_format.xml`.
-3. **Update Staging Area**: After formatting, files are re-added to the staging area. Files without changes after formatting are removed from the staging area.
 
 ## Usage
 
@@ -63,12 +71,18 @@ pre-commit run --all-files
 
 This triggers the formatting of all files matching the specified extensions in the repository.
 
-### Manual Formatting with the Python Script
+### Manual Formatting with the Python Entry Point
 
-To manually format files without running the pre-commit hook, use the Python script directly:
+To manually format files without running the pre-commit hook, use the `orafmt` command directly if your module is installed:
 
 ```bash
-python3 run-formatter.py file1.sql file2.sql
+orafmt file1.sql file2.sql
+```
+
+Alternatively, you can use the Python script directly:
+
+```bash
+python3 -m orafmt file1.sql file2.sql
 ```
 
 This command will format the specified files according to the configurations.
@@ -79,6 +93,5 @@ To modify formatting settings, edit the `trivadis_advanced_format.xml` file. The
 
 ## License
 
-This formatter uses Trivadis PL/SQL Formatter, licensed under the Apache License, Version 2.0.
+This formatter uses Trivadis PL/SQL Formatter, licensed under the Apache License, Version 2.0.  
 The pre-commit hook itself is also available under the Apache License, Version 2.0.
-
