@@ -3,6 +3,9 @@
 # Get the directory where the script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Use the SQL_PROGRAM environment variable if set, otherwise default to "sql"
+SQL_PROGRAM="${SQL_PROGRAM:-sql}"
+
 # Configuration for SQLcl and formatter paths, relative to the script's directory
 FORMATTER_JS=$(cygpath -w "$SCRIPT_DIR/formatter/format.js" 2>/dev/null || echo "$SCRIPT_DIR/formatter/format.js")
 SQLCL_OPTS="-nolog -noupdates -S"
@@ -16,11 +19,12 @@ create_json_file() {
     echo "$@" | awk 'BEGIN { ORS = ""; print "[\n"; }
         { printf "%s", (NR>1 ? ",\n" : ""); print "  \"" $1 "\""; }
         END { print "\n]\n"; }' > "$JSONFILE"
+    echo "JSON file created at: $JSONFILE"
 }
 
 # Format files using format.js via SQLcl
 format_via_format_js() {
-    sql $SQLCL_OPTS <<EOF
+    "$SQL_PROGRAM" $SQLCL_OPTS <<EOF
 script $FORMATTER_JS "$JSONFILE" ext=$FORMATTER_EXT xml=$FORMATTER_XML
 EXIT
 EOF
