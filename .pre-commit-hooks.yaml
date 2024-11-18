@@ -1,7 +1,7 @@
 - id: oracle-formatter-hook
   name: Oracle SQL Formatter Hook
   description: Formats SQL and other files using a custom script.
-  entry: orafmt
+  entry: orafmt --files
   language: python
   additional_dependencies:
     - orafmt==1.0.1  # Pin to your desired version
