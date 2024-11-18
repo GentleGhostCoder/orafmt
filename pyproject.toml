@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "orafmt"
-version = "1.0.0" # <<FORCE_BUMP>>
+version = "1.0.1" # <<FORCE_BUMP>>
 description = "A Python tool for formatting Oracle SQL files with SQLcl and custom formatting options."
 authors = ["Semjon Geist <mail@semjon-geist.de>"]
 license = "MIT"
