@@ -3,4 +3,6 @@
   description: Formats SQL and other files using a custom script.
   entry: orafmt
   language: python
+  additional_dependencies:
+    - orafmt==1.0.0  # Pin to your desired version
   files: \.(sql|prc|fnc|pks|pkb|trg|vw|tps|tpb|tbp|plb|pls|rcv|spc|typ|aqt|aqp|ctx|dbl|tab|dim|snp|con|collt|seq|syn|grt|sp|spb|sps|pck)$
