@@ -22,14 +22,3 @@ script $FORMATTER_JS "$file" ext=$FORMATTER_EXT xml=$FORMATTER_XML
 EXIT
 EOF
 done
-
-# Check for any changes in staged files
-git diff --exit-code --quiet --staged
-if [ $? -eq 0 ]; then
-    echo "Files were reformatted but no changes detected by Git."
-    exit 0
-fi
-
-# Exit with an error code for pre-commit to handle
-echo "Some files were reformatted. Please review and re-stage changes."
-exit 1
