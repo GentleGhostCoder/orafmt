@@ -1,9 +1,18 @@
+import platform
 import subprocess
 import sys
 from pathlib import Path
 import argparse
 import os
 import tempfile
+import shutil
+
+
+def escape_path(path: Path) -> str:
+    """Double-escape paths for SQLcl compatibility."""
+    if platform.system() == "Windows":
+        return str(path).replace("\\", "\\\\")  # Double escape backslashes for Windows
+    return str(path)  # No additional escaping needed for Linux
 
 
 def main():
@@ -12,14 +21,14 @@ def main():
     parser.add_argument(
         "--sql-program",
         type=str,
-        default=os.getenv("SQL_PROGRAM", "sql"),  # Use environment variable or default to "sql"
+        default=os.getenv("SQL_PROGRAM", shutil.which("sql")),  # Use env var or default to "sql"
         help="Path to the SQL program (default: 'sql' or $SQL_PROGRAM).",
     )
     parser.add_argument("files", nargs="*", help="Files to format.")
     args = parser.parse_args()
 
     # Define paths and configurations
-    module_dir = Path(__file__).parent.resolve()  # Module directory
+    module_dir = Path(__file__).parent.resolve()
     formatter_js = module_dir / "formatter" / "format.js"
     formatter_xml = module_dir / "formatter" / "trivadis_advanced_format.xml"
     arbori_file = module_dir / "formatter" / "trivadis_custom_format.arbori"
@@ -30,44 +39,53 @@ def main():
         "aqt,aqp,ctx,dbl,tab,dim,snp,con,collt,seq,syn,grt,sp,spb,sps,pck"
     )
 
-    # Ensure formatter and configuration exist
-    if not formatter_js.is_file():
-        print(f"Error: Formatter script '{formatter_js}' not found.")
-        sys.exit(1)
-
-    if not formatter_xml.is_file():
-        print(f"Error: Formatter configuration '{formatter_xml}' not found.")
-        sys.exit(1)
+    # Validate required files
+    for path, label in [(formatter_js, "Formatter JS"), (formatter_xml, "Formatter XML")]:
+        if not path.is_file():
+            print(f"Error: {label} '{path}' not found.")
+            sys.exit(1)
 
     # Check if any files are provided
     if not args.files:
         print("No files provided for formatting. Exiting.")
         sys.exit(0)
 
-    # Create a temporary JSON file containing the files to be formatted
+    # Create a temporary JSON file
     with tempfile.NamedTemporaryFile(delete=False, mode="w", suffix=".json") as temp_file:
-        json_file_path = temp_file.name
-        json_content = [Path(f).resolve().as_posix() for f in args.files]
+        json_file_path = Path(temp_file.name).resolve()
+        json_content = [escape_path(Path(f).resolve()) for f in args.files]
         temp_file.write("[\n")
         temp_file.write(",\n".join(f'  "{f}"' for f in json_content))
         temp_file.write("\n]")
 
-    # Construct the SQL script content
+    # Construct SQL script content
+    arbori_arg = f"arbori={escape_path(arbori_file)}" if arbori_file.is_file() else ""
     sql_script_content = f"""
-script {formatter_js.as_posix()} "{json_file_path}" ext={formatter_ext} xml={formatter_xml.as_posix()} arbori={arbori_file}
+script {escape_path(formatter_js)} "{escape_path(json_file_path)}" ext={formatter_ext} xml={escape_path(formatter_xml)} {arbori_arg}
 EXIT
 """
 
     try:
         # Run SQLcl with the constructed SQL script content
-        print(f"Running SQLcl to format files with dynamically constructed SQL script...")
+        print("Running SQLcl to format files with dynamically constructed SQL script...")
+        print("DEBUG: SQLcl Command Details")
+        print(f"SQL Program: {sql_program}")
+        print(f"Options: {sqlcl_opts}")
+        print(f"SQL Script Content:\n{sql_script_content}")
+        print("Temporary JSON File Content:")
+        print(json_file_path.read_text())  # Display the content of the JSON file
+
         result = subprocess.run(
             [sql_program, *sqlcl_opts],
             input=sql_script_content,
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            encoding="utf-8",
         )
+        print("DEBUG: SQLcl Output")
+        print(f"STDOUT:\n{result.stdout}")
+        print(f"STDERR:\n{result.stderr}")
 
         # Handle SQLcl output
         if result.returncode != 0:
@@ -84,8 +102,11 @@ EXIT
         sys.exit(1)
     finally:
         # Clean up the temporary JSON file
-        if Path(json_file_path).exists():
-            os.remove(json_file_path)
+        try:
+            if json_file_path.exists():
+                os.remove(json_file_path)
+        except Exception as cleanup_error:
+            print(f"Failed to clean up temporary JSON file: {cleanup_error}")
 
 
 if __name__ == "__main__":
