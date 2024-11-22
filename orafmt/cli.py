@@ -68,12 +68,6 @@ EXIT
     try:
         # Run SQLcl with the constructed SQL script content
         print("Running SQLcl to format files with dynamically constructed SQL script...")
-        print("DEBUG: SQLcl Command Details")
-        print(f"SQL Program: {sql_program}")
-        print(f"Options: {sqlcl_opts}")
-        print(f"SQL Script Content:\n{sql_script_content}")
-        print("Temporary JSON File Content:")
-        print(json_file_path.read_text())  # Display the content of the JSON file
 
         result = subprocess.run(
             [sql_program, *sqlcl_opts],
@@ -83,9 +77,6 @@ EXIT
             stderr=subprocess.PIPE,
             encoding="utf-8",
         )
-        print("DEBUG: SQLcl Output")
-        print(f"STDOUT:\n{result.stdout}")
-        print(f"STDERR:\n{result.stderr}")
 
         # Handle SQLcl output
         if result.returncode != 0:
