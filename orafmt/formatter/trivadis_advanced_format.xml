@@ -28,6 +28,6 @@
     <breaksAfterSelect>false</breaksAfterSelect>
     <spaceAfterCommas>true</spaceAfterCommas>
     <kwCase>oracle.dbtools.app.Format.Case.upper</kwCase>
-    <formatWhenSyntaxError>false</formatWhenSyntaxError>
+    <formatWhenSyntaxError>true</formatWhenSyntaxError>
     <keepQuotedIdentifiers>false</keepQuotedIdentifiers>
 </options>
