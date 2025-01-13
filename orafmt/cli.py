@@ -14,7 +14,6 @@ def escape_path(path: Path) -> str:
         return str(path).replace("\\", "\\\\")  # Double escape backslashes for Windows
     return str(path)  # No additional escaping needed for Linux
 
-
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Format SQL files using SQLcl.")
@@ -27,12 +26,17 @@ def main():
     parser.add_argument("files", nargs="*", help="Files to format.")
     args = parser.parse_args()
 
+    # Ensure sql_program is not None
+    sql_program = args.sql_program
+    if sql_program is None:
+        print("Error: SQL program not found. Please provide the path to the SQL program using --sql-program or set the SQL_PROGRAM environment variable.")
+        sys.exit(1)
+
     # Define paths and configurations
     module_dir = Path(__file__).parent.resolve()
     formatter_js = module_dir / "formatter" / "format.js"
     formatter_xml = module_dir / "formatter" / "trivadis_advanced_format.xml"
     arbori_file = module_dir / "formatter" / "trivadis_custom_format.arbori"
-    sql_program = args.sql_program
     sqlcl_opts = ["-nolog", "-noupdates", "-S"]
     formatter_ext = (
         "sql,prc,fnc,pks,pkb,trg,vw,tps,tpb,tbp,plb,pls,rcv,spc,typ,"
