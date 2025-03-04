@@ -5,8 +5,8 @@ description = "A Python tool for formatting Oracle SQL files with SQLcl and cust
 authors = ["Semjon Geist <mail@semjon-geist.de>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/YourUsername/orafmt"
-repository = "https://github.com/YourUsername/orafmt"
+homepage = "https://github.com/GentleGhostCoder/orafmt"
+repository = "https://github.com/GentleGhostCoder/orafmt"
 keywords = ["oracle", "sql", "formatter", "pre-commit", "sqlcl"]
 classifiers = [
     "Programming Language :: Python :: 3",

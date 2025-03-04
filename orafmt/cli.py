@@ -72,7 +72,7 @@ EXIT
     try:
         # Run SQLcl with the constructed SQL script content
         print("Running SQLcl to format files with dynamically constructed SQL script...")
-
+        print(f"SQL program: (args: {[sql_program, *sqlcl_opts]}, input: {sql_script_content})")
         result = subprocess.run(
             [sql_program, *sqlcl_opts],
             input=sql_script_content,

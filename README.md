@@ -17,6 +17,7 @@ This pre-commit hook requires Oracle SQLcl (SQL Command Line) to perform SQL for
 
 - **Download SQLcl**: The latest version can be downloaded from [Oracle SQLcl Downloads](https://www.oracle.com/database/sqldeveloper/technologies/sqlcl/download/).
 - **Install SQLcl**: Refer to the [installation guide](https://docs.oracle.com/en/database/oracle/sqlcl/19.4/sclsg/installing-and-getting-started-with-sqlcl.html) if needed.
+  - Version 23.4 are supported - https://www.oracle.com/sqlcl/download/sqlcl-downloads-23.4.html
 
 #### Optional: Set SQLcl Path
 
